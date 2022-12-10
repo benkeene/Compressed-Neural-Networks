@@ -1,0 +1,20 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{def} \PYG{n+nf}{rSVD}\PYG{p}{(}\PYG{n}{model}\PYG{p}{,} \PYG{n}{q}\PYG{p}{):}
+    \PYG{n}{sd} \PYG{o}{=} \PYG{n}{model}\PYG{o}{.}\PYG{n}{state\PYGZus{}dict}\PYG{p}{()}
+
+    \PYG{n}{stack0} \PYG{o}{=} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{svd\PYGZus{}lowrank}\PYG{p}{(}\PYG{n}{sd}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}linear\PYGZus{}relu\PYGZus{}stack.0.weight\PYGZsq{}}\PYG{p}{],} \PYG{n}{q}\PYG{p}{)}
+    \PYG{n}{stack2} \PYG{o}{=} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{svd\PYGZus{}lowrank}\PYG{p}{(}\PYG{n}{sd}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}linear\PYGZus{}relu\PYGZus{}stack.2.weight\PYGZsq{}}\PYG{p}{],} \PYG{n}{q}\PYG{p}{)}
+    \PYG{n}{stack4} \PYG{o}{=} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{svd\PYGZus{}lowrank}\PYG{p}{(}\PYG{n}{sd}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}linear\PYGZus{}relu\PYGZus{}stack.4.weight\PYGZsq{}}\PYG{p}{],} \PYG{n}{q}\PYG{p}{)}
+
+    \PYG{n}{sd}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}linear\PYGZus{}relu\PYGZus{}stack.0.weight\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{p}{(}
+        \PYG{n}{stack0}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{@} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{diagflat}\PYG{p}{(}\PYG{n}{stack0}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{])} \PYG{o}{@} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{transpose}\PYG{p}{(}\PYG{n}{stack0}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{],} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{))}
+
+    \PYG{n}{sd}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}linear\PYGZus{}relu\PYGZus{}stack.2.weight\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{p}{(}
+        \PYG{n}{stack2}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{@} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{diagflat}\PYG{p}{(}\PYG{n}{stack2}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{])} \PYG{o}{@} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{transpose}\PYG{p}{(}\PYG{n}{stack2}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{],} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{))}
+
+    \PYG{n}{sd}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}linear\PYGZus{}relu\PYGZus{}stack.4.weight\PYGZsq{}}\PYG{p}{]} \PYG{o}{=} \PYG{p}{(}
+        \PYG{n}{stack4}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{@} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{diagflat}\PYG{p}{(}\PYG{n}{stack4}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{])} \PYG{o}{@} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{transpose}\PYG{p}{(}\PYG{n}{stack4}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{],} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{))}
+
+    \PYG{n}{model}\PYG{o}{.}\PYG{n}{load\PYGZus{}state\PYGZus{}dict}\PYG{p}{(}\PYG{n}{sd}\PYG{p}{)}
+    \PYG{k}{return}
+\end{Verbatim}
