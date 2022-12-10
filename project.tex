@@ -61,7 +61,14 @@
 \maketitle % Print the title
 
 {
-	\hypersetup{linkcolor=black}
+	\hypersetup{
+		colorlinks=true,
+		linkcolor=black,
+		filecolor=magenta,      
+		urlcolor=cyan,
+		pdftitle={Overleaf Example},
+		pdfpagemode=FullScreen,
+	}
 	\tableofcontents
 }
 
@@ -238,5 +245,13 @@ This algorithm is clearly unfeasible for large $n$, but interesting to think abo
 
 To conclude, we've demonstrated how to manipulate the weight matrices of a neural network while training.
 For the classification between 10 labels, the network behaves well when its matrices are replaced by rank 10 approximations via randomized SVD and truncated SVD.
+
+\section{How to reproduce results and view source code}
+
+Clone from \url{https://github.com/benkeene/Compressed-Neural-Networks}, and run \mintinline{python}|project.py|.
+
+\bigskip
+
+The repository is roughly 120 MB in size, due to the MNIST datasets used.
 
 \end{document}
