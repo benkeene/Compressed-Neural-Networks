@@ -50,11 +50,11 @@ class NeuralNetwork(nn.Module):
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
             #nn.Linear(28*28, 512),
-            nn.Linear(28*28, 10),
+            nn.Linear(28*28, 15),
             nn.ReLU(),
-            nn.Linear(10, 512),
+            nn.Linear(15, 15),
             nn.ReLU(),
-            nn.Linear(512, 10)
+            nn.Linear(15, 10)
         )
 
     def forward(self, x):
@@ -67,16 +67,38 @@ model = NeuralNetwork().to(device)
 print(model)
 
 loss_fn = nn.CrossEntropyLoss()
-optimizer = SGD(model.parameters(), lr=1e-3)
+optimizer = SGD(model.parameters(), lr=1e-2)
 
 
 def truncSVD(model, q1, q2, q3):
     sd = model.state_dict()
+    # print(sd['linear_relu_stack.0.weight'].size())
 
-    U, S, Vh = torch.linalg.svd(
+    U0, S0, Vh0 = torch.linalg.svd(
         sd['linear_relu_stack.0.weight'], full_matrices=False)
-    print(S)
-    quit()
+    U2, S2, Vh2 = torch.linalg.svd(
+        sd['linear_relu_stack.2.weight'], full_matrices=False)
+    U4, S4, Vh4 = torch.linalg.svd(
+        sd['linear_relu_stack.4.weight'], full_matrices=False)
+
+    for j in range(15):
+        if j > q1:
+            S0[j] = 0
+        if j > q2:
+            S2[j] = 0
+    for j in range(10):
+        if j > q3:
+            S4[j] = 0
+
+    sd['linear_relu_stack.0.weight'] = torch.matmul(
+        torch.matmul(U0, torch.diag(S0)), Vh0)
+    sd['linear_relu_stack.2.weight'] = torch.matmul(
+        torch.matmul(U2, torch.diag(S2)), Vh2)
+    sd['linear_relu_stack.4.weight'] = torch.matmul(
+        torch.matmul(U4, torch.diag(S4)), Vh4)
+
+    model.load_state_dict(sd)
+    return
 
 
 def rSVD(model, q):
@@ -132,8 +154,8 @@ def train(dataloader, model, loss_fn, optimizer):
         loss.backward()
         optimizer.step()
 
-        #rSVD(model, 10)
-        truncSVD(model, 10, 20, 30)
+        rSVD(model, 10)
+        #truncSVD(model, 10, 5, 5)
 
         if batch % 100 == 0:
             loss, current = loss.item(), batch * len(X)
