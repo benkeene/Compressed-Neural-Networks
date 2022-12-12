@@ -3,7 +3,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision.transforms import ToTensor
-from compressed_SGD import SGD
+from torch.optim import SGD
 from sklearn.utils import extmath
 import numpy as np
 import timeit
